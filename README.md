@@ -1,4 +1,4 @@
-# 🚀 Asteroid Defense – Space Shooter
+# 🚀 Asteroid Radar – Space Shooter
 
 *A minimalistic space shooter with turret management, energy economy, and asteroid destruction.*
 
