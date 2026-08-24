@@ -1,0 +1,21 @@
+{
+	"language_name": "Русский",
+	"energy": "ЭНЕРГИЯ",
+	"hp": "ЗДОРОВЬЕ",
+	"score": "СЧЁТ",
+	"asteroids": "АСТЕРОИДЫ",
+	"asteroids_empty": "Нет астероидов",
+	"game_over": "ИГРА ОКОНЧЕНА",
+	"settings": "НАСТРОЙКИ",
+	"difficulty": "Сложность",
+	"color_scheme": "Цветовая схема",
+	"sound": "Звук",
+	"music": "Музыка",
+	"effects": "Эффекты",
+	"restart": "ПЕРЕЗАПУСК",
+	"quit": "ВЫХОД",
+	"shield_error": "Недостаточно энергии для щита!",
+	"asteroid_collision": "💥 Столкновение с астероидом!",
+	"hp_format": "Здоровье: {current}/{max}",
+	"asteroid_format": "{name} (HP: {hp}/{max_hp})"
+}

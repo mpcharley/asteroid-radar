@@ -1,0 +1,21 @@
+{
+	"language_name": "English",
+	"energy": "ENERGY",
+	"hp": "HP",
+	"score": "SCORE",
+	"asteroids": "ASTEROIDS",
+	"asteroids_empty": "No asteroids",
+	"game_over": "GAME OVER",
+	"settings": "SETTINGS",
+	"difficulty": "Difficulty",
+	"color_scheme": "Color scheme",
+	"sound": "Sound",
+	"music": "Music",
+	"effects": "Effects",
+	"restart": "RESTART",
+	"quit": "QUIT",
+	"shield_error": "Not enough energy for shield!",
+	"asteroid_collision": "💥 Asteroid collision!",
+	"hp_format": "HP: {current}/{max}",
+	"asteroid_format": "{name} (HP: {hp}/{max_hp})"
+}

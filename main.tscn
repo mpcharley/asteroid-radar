@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://bfq7y60w4udq5"]
+
+[ext_resource type="Script" uid="uid://bhvucoh11ml4j" path="res://color_rect.gd" id="1_h2yge"]
+[ext_resource type="Script" uid="uid://bgoicxtj6vu5k" path="res://main.gd" id="1_ig7tw"]
+[ext_resource type="Script" uid="uid://cyi2ug2h0q7lu" path="res://stars.gd" id="2_0xm2m"]
+
+[node name="Control" type="Control" unique_id=511185373]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1641270845]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0.06666667, 0, 1)
+script = ExtResource("1_h2yge")
+
+[node name="Control" type="Control" parent="ColorRect" unique_id=143982554]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_ig7tw")
+
+[node name="Node2D" type="Control" parent="." unique_id=1122542227]
+anchors_preset = 0
+script = ExtResource("2_0xm2m")
