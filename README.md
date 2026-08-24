@@ -135,7 +135,8 @@ This project is open-source under the MIT License. Feel free to modify and distr
 
 ## 🙏 Credits
 
-- Developed by [Your Name]
+- Developed by mpcharley
+- Music by Felgrail - https://felgrail.bandcamp.com/
 - Built with Godot Engine – https://godotengine.org/
 
 ---
