@@ -32,7 +32,7 @@ jobs:
       - name: Setup Godot
         uses: chickensoft-games/setup-godot@v2
         with:
-          version: 4.2.1               # ваша версия
+          version: 4.7.1               # ваша версия
           include-templates: true
 
       # Отладочный шаг: показать все доступные пресеты
