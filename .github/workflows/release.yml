@@ -1,9 +1,9 @@
-name: Build and Release Game
+name: Build and Release
 
 on:
   push:
     tags:
-      - 'v*'  # Запускается при создании тега, например v1.0.0
+      - 'v*'
 
 jobs:
   export:
@@ -12,34 +12,34 @@ jobs:
     strategy:
       matrix:
         include:
-          - platform: windows
-            os: windows-latest
-            extension: .exe
-          - platform: linux
+          - platform: Linux
             os: ubuntu-latest
-            extension: .x86_64
-          - platform: macos
+            preset: "Linux"
+            extension: ".x86_64"
+          - platform: macOS
             os: macos-latest
-            extension: .zip  # Для macOS часто делают .zip
+            preset: "macOS"
+            extension: ".zip"
+          - platform: Windows
+            os: windows-latest
+            preset: "Windows Desktop"
+            extension: ".exe"
 
     steps:
-      # 1. Загружаем код из репозитория
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Устанавливаем Godot (используем проверенное действие)
       - name: Setup Godot
         uses: chickensoft-games/setup-godot@v2
         with:
-          godot-version: 4.7.1
+          version: 4.2.1   # укажите вашу версию Godot, например 4.2.1, 4.3 и т.д.
+          include-templates: true
 
-      # 3. Собираем проект
       - name: Export game
         run: |
           mkdir -p build
-          godot --headless --export-release "${{ matrix.platform }}" "build/game-${{ matrix.platform }}${{ matrix.extension }}"
+          godot --headless --export-release "${{ matrix.preset }}" "build/game-${{ matrix.platform }}${{ matrix.extension }}"
 
-      # 4. Загружаем собранный файл как артефакт
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -48,18 +48,16 @@ jobs:
 
   release:
     name: Create Release and Upload Assets
-    needs: export  # Ждём завершения всех сборок
+    needs: export
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
 
     steps:
-      # 1. Скачиваем все собранные артефакты
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
           path: artifacts
 
-      # 2. Создаём релиз и прикрепляем к нему файлы
       - name: Create Release and Upload Assets
         uses: softprops/action-gh-release@v2
         with:
