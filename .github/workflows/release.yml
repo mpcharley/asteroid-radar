@@ -3,7 +3,7 @@ name: Build and Release
 on:
   push:
     tags:
-      - 'v*'                     # Запуск при тегах v1.0.0, v2.3, etc.
+      - 'v*'
 
 jobs:
   export:
@@ -14,7 +14,7 @@ jobs:
         include:
           - platform: Linux
             os: ubuntu-latest
-            preset: "Linux"              # точно как в export_presets.cfg
+            preset: "Linux"
             extension: ".x86_64"
           - platform: macOS
             os: macos-latest
@@ -22,7 +22,7 @@ jobs:
             extension: ".zip"
           - platform: Windows
             os: windows-latest
-            preset: "Windows Desktop"     # с пробелом, в кавычках
+            preset: "Windows Desktop"
             extension: ".exe"
 
     steps:
@@ -32,26 +32,31 @@ jobs:
       - name: Setup Godot
         uses: chickensoft-games/setup-godot@v2
         with:
-          version: 4.7.1               # ваша версия
+          version: 4.7.1            # ваша текущая версия
           include-templates: true
+          cache: true
 
-      # Отладочный шаг: показать все доступные пресеты
-      - name: List export presets
+      # ----- ОТЛАДОЧНЫЕ ШАГИ -----
+      - name: Показать список пресетов (полный вывод)
         run: |
-          echo "=== Список пресетов ==="
-          godot --headless --list-export-presets --path .
+          echo "=== ДОСТУПНЫЕ ПРЕСЕТЫ ==="
+          godot --headless --list-export-presets --path . 2>&1
 
-      - name: Export game
+      - name: Попытка экспорта с выводом ошибок
         run: |
           mkdir -p build
-          godot --headless --export-release "${{ matrix.preset }}" "build/game-${{ matrix.platform }}${{ matrix.extension }}" --path .
+          echo "Запуск экспорта для пресета: ${{ matrix.preset }}"
+          godot --headless --export-release "${{ matrix.preset }}" "build/game-${{ matrix.platform }}${{ matrix.extension }}" --path . 2>&1
+          echo "Код возврата: $?"
+          echo "Содержимое папки build:"
+          ls -la build/ || echo "Папка build пуста или не существует"
 
-      - name: Upload artifact
+      - name: Загрузка артефакта
         uses: actions/upload-artifact@v4
         with:
           name: game-${{ matrix.platform }}
           path: build/game-${{ matrix.platform }}${{ matrix.extension }}
-        if: always()   # загружаем даже если предупреждение, чтобы увидеть, что создалось
+        if: always()   # загружаем даже если файла нет – увидим предупреждение
 
   release:
     name: Create Release and Upload Assets
