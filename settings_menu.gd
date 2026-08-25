@@ -230,7 +230,6 @@ func _on_language_selected(lang: int) -> void:
 
 func _on_restart_pressed() -> void:
 	GameManager.drop_score()
-	#GameManager.score_changed.emit(0)
 	close_and_free()
 	get_tree().reload_current_scene()
 
