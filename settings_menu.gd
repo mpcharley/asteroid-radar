@@ -94,25 +94,17 @@ func _ready() -> void:
 	sound_label.modulate = Color.WHITE
 	vbox.add_child(sound_label)
 
-	var sound_hbox = HBoxContainer.new()
-	sound_hbox.add_theme_constant_override("separation", 10)
-	vbox.add_child(sound_hbox)
+	# Контейнер для слайдеров (с вертикальным расположением)
+	var sound_vbox = VBoxContainer.new()
+	sound_vbox.add_theme_constant_override("separation", 5)
+	vbox.add_child(sound_vbox)
 
-	var music_check = CheckButton.new()
-	music_check.button_pressed = SettingsManager.music_enabled
-	music_check.text = TranslationManager.get_text("music")
-	music_check.add_theme_font_override("font", FontManager.custom_font)
-	music_check.pressed.connect(_on_music_toggled.bind(music_check))
-	sound_hbox.add_child(music_check)
-
-	var sounds_check = CheckButton.new()
-	sounds_check.button_pressed = SettingsManager.sounds_enabled
-	sounds_check.text = TranslationManager.get_text("sounds")
-	sounds_check.add_theme_font_override("font", FontManager.custom_font)
-	sounds_check.pressed.connect(_on_sounds_toggled.bind(sounds_check))
-	sound_hbox.add_child(sounds_check)
-
-	# ---------- Автобой ----------
+	# Создаём слайдеры для каждого канала
+	_create_volume_slider(sound_vbox, TranslationManager.get_text("music_volume"), SettingsManager.music_volume, SettingsManager.set_music_volume, "")
+	_create_volume_slider(sound_vbox, TranslationManager.get_text("radar_volume"), SettingsManager.radar_volume, SettingsManager.set_radar_volume, "radar")
+	_create_volume_slider(sound_vbox, TranslationManager.get_text("shot_volume"), SettingsManager.shot_volume, SettingsManager.set_shot_volume, "shot")
+	_create_volume_slider(sound_vbox, TranslationManager.get_text("alarm_volume"), SettingsManager.alarm_volume, SettingsManager.set_alarm_volume, "alarm")
+	# Автобой
 	var auto_label = Label.new()
 	auto_label.text = TranslationManager.get_text("autobattle")+":"
 	auto_label.add_theme_font_override("font", FontManager.custom_font)
@@ -128,11 +120,8 @@ func _ready() -> void:
 	auto_check.button_pressed = SettingsManager.autobattle_enabled
 	auto_check.add_theme_font_override("font", FontManager.custom_font)
 	_update_autobattle_text(auto_check)
-	#auto_check.pressed.connect(_on_autobattle_toggled.bind(auto_check))
-	#auto_check.text = TranslationManager.get_text("is_on")
 	auto_check.pressed.connect(_on_autobattle_toggled.bind(auto_check))
 	auto_hbox.add_child(auto_check)
-	# -----------------------------
 
 	# Язык
 	var lang_label = Label.new()
@@ -181,22 +170,98 @@ func _ready() -> void:
 	quit_btn.pressed.connect(_on_quit_pressed)
 	action_hbox.add_child(quit_btn)
 
+
+# -------------------- ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ --------------------
+
+# Функция для создания слайдера с меткой (ИСПРАВЛЕНА)
+func _create_volume_slider(parent: VBoxContainer, label_text: String, initial_value: float, callback: Callable, sound_type: String = "") -> void:
+	var hbox = HBoxContainer.new()
+	parent.add_child(hbox)
+
+	var label = Label.new()
+	label.text = label_text + ":"
+	label.add_theme_font_override("font", FontManager.custom_font)
+	label.add_theme_font_size_override("font_size", 14)
+	label.modulate = Color.WHITE
+	label.custom_minimum_size = Vector2(120, 0)
+	label.mouse_filter = MOUSE_FILTER_IGNORE
+	hbox.add_child(label)
+
+	var slider = HSlider.new()
+	slider.min_value = 0
+	slider.max_value = 100
+	slider.value = initial_value * 100
+	slider.size_flags_horizontal = SIZE_EXPAND
+	slider.custom_minimum_size = Vector2(100, 20)
+	slider.mouse_filter = MOUSE_FILTER_STOP
+	slider.focus_mode = FOCUS_ALL
+
+	# Основной callback (изменение громкости)
+	slider.value_changed.connect(func(value): callback.call(value / 100.0))
+
+	var value_label = Label.new()
+	value_label.text = str(round(slider.value)) + "%"
+	value_label.add_theme_font_override("font", FontManager.custom_font)
+	value_label.add_theme_font_size_override("font_size", 12)
+	value_label.modulate = Color.WHITE
+	value_label.custom_minimum_size = Vector2(50, 0)
+	value_label.mouse_filter = MOUSE_FILTER_IGNORE
+	hbox.add_child(value_label)
+
+	slider.value_changed.connect(func(value): value_label.text = str(round(value)) + "%")
+
+	# ---- Предпросмотр звука ----
+	if sound_type != "":
+		# При отпускании слайдера (перетаскивание)
+		slider.drag_ended.connect(func(_value_changed: bool):
+			match sound_type:
+				"radar":
+					AudioManager.play_test_radar()
+				"shot":
+					AudioManager.play_test_shot()
+				"alarm":
+					AudioManager.play_test_alarm()
+		)
+		# При прокрутке колесика мыши или других событиях ввода
+		slider.gui_input.connect(_on_slider_gui_input.bind(slider, sound_type))
+
+	hbox.add_child(slider)
+
+
+# Обработчик событий ввода для слайдера
+func _on_slider_gui_input(event: InputEvent, slider: HSlider, sound_type: String) -> void:
+	if event is InputEventMouseButton:
+		# Проверяем нажатие колесика мыши (вверх/вниз)
+		if event.button_index == MOUSE_BUTTON_WHEEL_UP or event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			if event.pressed:
+				match sound_type:
+					"radar":
+						AudioManager.play_test_radar()
+					"shot":
+						AudioManager.play_test_shot()
+					"alarm":
+						AudioManager.play_test_alarm()
+	# (Опционально) можно обработать нажатия клавиш-стрелок
+	# if event is InputEventKey:
+	#     if event.pressed and (event.keycode == KEY_LEFT or event.keycode == KEY_RIGHT):
+	#         # аналогично вызываем звук
+
 func _update_autobattle_text(check: CheckButton) -> void:
 	if check.button_pressed:
 		check.text = TranslationManager.get_text("is_on")
 	else:
 		check.text = TranslationManager.get_text("is_off")
 
+
 func open() -> void:
 	get_tree().paused = true
-	AudioManager.set_music_paused(true)
-
 
 func close() -> void:
 	get_tree().paused = false
-	AudioManager.set_music_paused(false)
 	closed.emit()
 
+
+# -------------------- ОБРАБОТЧИКИ --------------------
 
 func _on_difficulty_selected(diff: int) -> void:
 	SettingsManager.set_difficulty(diff)
@@ -223,6 +288,7 @@ func _on_autobattle_toggled(check: CheckButton) -> void:
 	check.button_pressed = SettingsManager.autobattle_enabled
 	_update_autobattle_text(check)
 
+
 func _on_language_selected(lang: int) -> void:
 	SettingsManager.set_language(lang)
 	close_and_free()
@@ -230,6 +296,7 @@ func _on_language_selected(lang: int) -> void:
 
 func _on_restart_pressed() -> void:
 	GameManager.drop_score()
+	get_tree().paused = false
 	close_and_free()
 	get_tree().reload_current_scene()
 

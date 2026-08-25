@@ -9,8 +9,10 @@ const DEFAULT_DARK: Color = Color.BLACK
 const DEFAULT_LIGHT: Color = Color.ALICE_BLUE
 
 # Настройки звука
-var music_enabled: bool = true
-var sounds_enabled: bool = true
+var music_volume: float = 0.8
+var radar_volume: float = 0.5
+var shot_volume: float = 0.7
+var alarm_volume: float = 0.9
 
 # Настройки языка
 enum Language { EN, RU }
@@ -312,22 +314,30 @@ func set_difficulty(diff: int) -> void:
 
 
 # -------------------- Настройки звука --------------------
-func toggle_music() -> void:
-	music_enabled = not music_enabled
-	settings_changed.emit()
-	save_settings()
-	if music_enabled:
-		AudioManager.resume_music()
-	else:
-		AudioManager.pause_music()
 
-
-func toggle_sounds() -> void:
-	sounds_enabled = not sounds_enabled
+func set_music_volume(value: float) -> void:
+	music_volume = clamp(value, 0.0, 1.0)
 	settings_changed.emit()
 	save_settings()
 
 
+func set_radar_volume(value: float) -> void:
+	radar_volume = clamp(value, 0.0, 1.0)
+	settings_changed.emit()
+	save_settings()
+
+
+func set_shot_volume(value: float) -> void:
+	shot_volume = clamp(value, 0.0, 1.0)
+	settings_changed.emit()
+	save_settings()
+
+
+func set_alarm_volume(value: float) -> void:
+	alarm_volume = clamp(value, 0.0, 1.0)
+	settings_changed.emit()
+	save_settings()
+	
 # -------------------- Настройки языка --------------------
 func set_language(lang: int) -> void:
 	if lang == Language.EN or lang == Language.RU:
@@ -350,8 +360,10 @@ func save_settings() -> void:
 	var config = ConfigFile.new()
 	config.set_value("settings", "difficulty", current_difficulty)
 	config.set_value("settings", "color_scheme", current_scheme_index)
-	config.set_value("settings", "music_enabled", music_enabled)
-	config.set_value("settings", "sounds_enabled", sounds_enabled)
+	config.set_value("settings", "music_volume", music_volume)
+	config.set_value("settings", "radar_volume", radar_volume)
+	config.set_value("settings", "shot_volume", shot_volume)
+	config.set_value("settings", "alarm_volume", alarm_volume)
 	config.set_value("settings", "autobattle", autobattle_enabled)
 	config.set_value("settings", "language", language)
 	config.save("user://settings.cfg")
@@ -363,15 +375,19 @@ func load_settings() -> void:
 		current_difficulty = config.get_value("settings", "difficulty", GameManager.Difficulty.MEDIUM)
 		GameManager.set_difficulty(current_difficulty)
 		current_scheme_index = config.get_value("settings", "color_scheme", 0)
-		music_enabled = config.get_value("settings", "music_enabled", true)
-		sounds_enabled = config.get_value("settings", "sounds_enabled", true)
+		music_volume = config.get_value("settings", "music_volume", 0.8)
+		radar_volume = config.get_value("settings", "radar_volume", 0.5)
+		shot_volume = config.get_value("settings", "shot_volume", 0.7)
+		alarm_volume = config.get_value("settings", "alarm_volume", 0.9)
 		language = config.get_value("settings", "language", Language.EN)
 		autobattle_enabled = config.get_value("settings", "autobattle", true)
 	else:
 		current_difficulty = GameManager.Difficulty.MEDIUM
 		current_scheme_index = 0
-		music_enabled = true
-		sounds_enabled = true
+		music_volume = 0.8
+		radar_volume = 0.5
+		shot_volume = 0.7
+		alarm_volume = 0.9
 		language = Language.EN
 		autobattle_enabled = false
 		GameManager.set_difficulty(GameManager.Difficulty.MEDIUM)

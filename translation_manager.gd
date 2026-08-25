@@ -33,6 +33,10 @@ var translations = {
 		"autobattle": "Auto-battle",
 		"is_on":"ON",
 		"is_off":"OFF",
+		"music_volume": "Music",
+		"radar_volume": "Radar",
+		"shot_volume": "Shots",
+		"alarm_volume": "Alarm",
 	},
 	"ru": {
 		"settings_title": "НАСТРОЙКИ",
@@ -58,6 +62,10 @@ var translations = {
 		"autobattle": "Автобой",
 		"is_on":"Включен",
 		"is_off":"Выключен",
+		"music_volume": "Музыка",
+		"radar_volume": "Радар",
+		"shot_volume": "Выстрелы",
+		"alarm_volume": "Тревога",
 	}
 }
 

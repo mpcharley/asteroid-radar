@@ -1,8 +1,5 @@
-# AudioManager.gd
+# audio_manager.gd
 extends Node
-# ============================================================
-# Менеджер звуков и музыки. Учитывает настройки из SettingsManager.
-# ============================================================
 
 var music_stream: AudioStream
 var radar_sound: AudioStream
@@ -20,7 +17,7 @@ var alarm_active: bool = false
 
 
 func _ready() -> void:
-	# Загружаем звуки (заглушка, если файлов нет)
+	# Загружаем звуки
 	music_stream = load("res://sounds/music.ogg") if ResourceLoader.exists("res://sounds/music.ogg") else null
 	radar_sound = load("res://sounds/radar.ogg") if ResourceLoader.exists("res://sounds/radar.ogg") else null
 	shot_sound = load("res://sounds/shot.ogg") if ResourceLoader.exists("res://sounds/shot.ogg") else null
@@ -28,39 +25,59 @@ func _ready() -> void:
 
 	# Создаём плееры
 	music_player = AudioStreamPlayer.new()
+	music_player.process_mode = PROCESS_MODE_ALWAYS   # музыка не останавливается при паузе игры
 	add_child(music_player)
 	if music_stream:
 		music_player.stream = music_stream
-		music_player.volume_db = -10
-		music_player.autoplay
+		music_player.volume_db = linear_to_db(SettingsManager.music_volume)
+		music_player.autoplay = true
+		if SettingsManager.music_volume > 0:
+			music_player.play()
 
 	radar_player = AudioStreamPlayer.new()
+	radar_player.process_mode = PROCESS_MODE_ALWAYS
 	if radar_sound:
 		radar_player.stream = radar_sound
-	radar_player.volume_db = -15
+	radar_player.volume_db = linear_to_db(SettingsManager.radar_volume)
 	add_child(radar_player)
 
 	shot_player = AudioStreamPlayer.new()
+	shot_player.process_mode = PROCESS_MODE_ALWAYS
 	if shot_sound:
 		shot_player.stream = shot_sound
-	shot_player.volume_db = -20
+	shot_player.volume_db = linear_to_db(SettingsManager.shot_volume)
 	add_child(shot_player)
 
 	alarm_player = AudioStreamPlayer.new()
+	alarm_player.process_mode = PROCESS_MODE_ALWAYS
 	if alarm_sound:
 		alarm_player.stream = alarm_sound
-	alarm_player.volume_db = -3
+	alarm_player.volume_db = linear_to_db(SettingsManager.alarm_volume)
 	add_child(alarm_player)
 
-	# Запускаем музыку, если включена
-	if music_stream and SettingsManager.music_enabled:
+	# Подписываемся на изменение настроек
+	SettingsManager.settings_changed.connect(_update_volumes)
+
+
+func _update_volumes() -> void:
+	# Обновляем громкость всех плееров (без пауз и перезапусков)
+	music_player.volume_db = linear_to_db(SettingsManager.music_volume)
+	radar_player.volume_db = linear_to_db(SettingsManager.radar_volume)
+	shot_player.volume_db = linear_to_db(SettingsManager.shot_volume)
+	alarm_player.volume_db = linear_to_db(SettingsManager.alarm_volume)
+
+	# Если громкость музыки > 0 и плеер не играет – запускаем
+	if SettingsManager.music_volume > 0 and not music_player.playing and music_stream:
 		music_player.play()
+	# Если громкость стала 0 – останавливаем
+	elif SettingsManager.music_volume == 0 and music_player.playing:
+		music_player.stop()
 
 
 func _process(delta: float) -> void:
 	if get_tree().paused:
 		return
-	if radar_sound == null or not SettingsManager.sounds_enabled:
+	if radar_sound == null or SettingsManager.radar_volume == 0:
 		return
 
 	radar_timer += delta
@@ -69,15 +86,15 @@ func _process(delta: float) -> void:
 		radar_player.play()
 
 
-# -------------------- Публичные методы --------------------
+# -------------------- Основные звуковые эффекты --------------------
 func play_shot() -> void:
-	if shot_sound == null or not SettingsManager.sounds_enabled:
+	if shot_sound == null or SettingsManager.shot_volume == 0:
 		return
 	shot_player.play()
 
 
 func set_alarm(active: bool) -> void:
-	if alarm_sound == null or not SettingsManager.sounds_enabled:
+	if alarm_sound == null or SettingsManager.alarm_volume == 0:
 		return
 	if active and not alarm_active:
 		alarm_active = true
@@ -87,20 +104,20 @@ func set_alarm(active: bool) -> void:
 		alarm_player.stop()
 
 
-func pause_music() -> void:
-	if music_stream == null:
+# -------------------- Тестовое воспроизведение для настроек --------------------
+func play_test_radar() -> void:
+	if radar_sound == null or SettingsManager.radar_volume == 0:
 		return
-	music_player.stop()
+	radar_player.play()
 
 
-func resume_music() -> void:
-	if music_stream == null or not SettingsManager.music_enabled:
+func play_test_shot() -> void:
+	if shot_sound == null or SettingsManager.shot_volume == 0:
 		return
-	music_player.play()
+	shot_player.play()
 
 
-func set_music_paused(paused: bool) -> void:
-	if paused:
-		pause_music()
-	else:
-		resume_music()
+func play_test_alarm() -> void:
+	if alarm_sound == null or SettingsManager.alarm_volume == 0:
+		return
+	alarm_player.play()
