@@ -16,7 +16,7 @@ jobs:
             os: ubuntu-latest
             preset: "Linux"
             artifact_name: "AsteroidRadar_Linux.x86_64"
-          - platform: Windows
+          - platform: "Windows Desktop"
             os: windows-latest
             preset: "Windows Desktop"
             artifact_name: "AsteroidRadar_Windows.exe"
@@ -64,4 +64,4 @@ jobs:
         with:
           files: artifacts/**/*
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}   # или GITHUB_TOKEN, если настроены права
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}   # или GITHUB_TOKEN, если настроили права
