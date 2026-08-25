@@ -1,13 +1,24 @@
 extends Control
 
-# Панели UI
+# ============================================================
+# HUD – все панели интерфейса, курсор, обновление значений
+# ============================================================
+
+# Константы позиционирования (якоря и смещения)
+const ANCHOR_TOP_RIGHT = { "left": 1.0, "top": 0.0, "right": 1.0, "bottom": 0.0 }
+
+const OFFSET_SCORE = { "left": -180, "top": 20,  "right": -20, "bottom": 50 }
+const OFFSET_ENERGY = { "left": -180, "top": 60,  "right": -20, "bottom": 90 }
+const OFFSET_HP     = { "left": -180, "top": 100, "right": -20, "bottom": 130 }
+
+# Панели
 var energy_panel: UIPanel
 var hp_panel: UIPanel
 var score_panel: UIPanel
 var asteroids_panel: Panel
 var asteroids_label: Label
 
-# Храним текущие значения для обновления текста
+# Текущие значения (для обновления текста при смене языка)
 var _current_energy: float = GameManager.MAX_ENERGY
 var _current_hp: int = GameManager.max_ship_hp
 var _current_score: int = 0
@@ -24,6 +35,7 @@ func _ready() -> void:
 	create_score_panel()
 	create_asteroids_panel()
 
+	# Подписка на сигналы GameManager
 	GameManager.energy_changed.connect(_on_energy_changed)
 	_on_energy_changed(GameManager.current_energy)
 
@@ -81,8 +93,8 @@ func create_energy_panel() -> void:
 	energy_panel = _create_ui_panel(
 		TranslationManager.get_text("energy") + ": 0/0",
 		"ui_text_energy",
-		{ "left": 1.0, "top": 0.0, "right": 1.0, "bottom": 0.0 },   # якоря как у счёта
-		{ "left": -180, "top": 60, "right": -20, "bottom": 90 },   # смещения: на 10 пикселей ниже счёта
+		ANCHOR_TOP_RIGHT,
+		OFFSET_ENERGY,
 		5
 	)
 
@@ -91,8 +103,8 @@ func create_hp_panel() -> void:
 	hp_panel = _create_ui_panel(
 		TranslationManager.get_text("hp") + ": 0/0",
 		"ui_text_hp",
-		{ "left": 1.0, "top": 0.0, "right": 1.0, "bottom": 0.0 },
-		{ "left": -180, "top": 100, "right": -20, "bottom": 130 },
+		ANCHOR_TOP_RIGHT,
+		OFFSET_HP,
 		5
 	)
 
@@ -101,13 +113,13 @@ func create_score_panel() -> void:
 	score_panel = _create_ui_panel(
 		TranslationManager.get_text("score") + ": 0",
 		"ui_text_score",
-		{ "left": 1.0, "top": 0.0, "right": 1.0, "bottom": 0.0 },
-		{ "left": -180, "top": 20, "right": -20, "bottom": 50 },
+		ANCHOR_TOP_RIGHT,
+		OFFSET_SCORE,
 		5
 	)
 
 
-# ====== Астероидная панель ======
+# ====== Астероидная панель (слева, динамическая высота) ======
 func create_asteroids_panel() -> void:
 	asteroids_panel = Panel.new()
 	asteroids_label = Label.new()
@@ -126,6 +138,7 @@ func create_asteroids_panel() -> void:
 	asteroids_panel.add_child(asteroids_label)
 	asteroids_panel.add_theme_stylebox_override("panel", _create_panel_style())
 	asteroids_panel.z_index = 5
+	# Панель астероидов будет позиционироваться через offset'ы (без якорей)
 	asteroids_panel.anchor_left = 0.0
 	asteroids_panel.anchor_top = 0.0
 	asteroids_panel.anchor_right = 0.0
@@ -164,14 +177,17 @@ func _update_asteroids_panel_position() -> void:
 	var margin = screen_size.x * 0.01
 	var panel_width = screen_size.x * 0.125
 	var panel_height = screen_size.y * 0.3
-	var star_panel_right = margin + panel_width
-	asteroids_panel.offset_left = star_panel_right + margin
-	asteroids_panel.offset_top = margin
-	asteroids_panel.offset_right = star_panel_right + margin + panel_width
-	asteroids_panel.offset_bottom = margin + panel_height
+
+	# Позиция: слева, под верхним отступом + высота панели звёзд (если она есть)
+	var top_offset = margin + panel_height + margin  # предполагаем, что панель звёзд занимает panel_height + margin сверху
+	var left_offset = margin
+	asteroids_panel.offset_left = left_offset
+	asteroids_panel.offset_top = top_offset
+	asteroids_panel.offset_right = left_offset + panel_width
+	asteroids_panel.offset_bottom = top_offset + panel_height   # явно задаём высоту
 
 
-# ====== Обновление UI с сохранением значений ======
+# ====== Обновление значений ======
 func _on_energy_changed(new_energy: float) -> void:
 	_current_energy = new_energy
 	_update_energy_text()
@@ -222,6 +238,7 @@ func _on_ship_destroyed() -> void:
 	settings_requested.emit()
 
 
+# ====== Обновление цветов и текстов при смене настроек ======
 func _on_settings_changed() -> void:
 	update_ui_colors()
 	update_ui_texts()
@@ -248,12 +265,12 @@ func update_ui_colors() -> void:
 
 
 func update_ui_texts() -> void:
-	# Перестраиваем тексты из сохранённых значений, используя новый язык
+	# Обновляем тексты панелей с учётом текущего языка и сохранённых значений
 	_update_energy_text()
 	_update_hp_text()
 	_update_score_text()
 
-	# Обновляем панель астероидов (только заголовок)
+	# Обновляем заголовок панели астероидов
 	if asteroids_label:
 		var lines = asteroids_label.text.split("\n")
 		if lines.size() > 0:
@@ -261,6 +278,7 @@ func update_ui_texts() -> void:
 			asteroids_label.text = "\n".join(lines)
 
 
+# ====== Список астероидов ======
 func _on_asteroids_updated(asteroid_list: Array) -> void:
 	if not asteroids_label:
 		return
