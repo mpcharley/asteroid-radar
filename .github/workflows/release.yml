@@ -3,7 +3,7 @@ name: Build and Release
 on:
   push:
     tags:
-      - 'v*'
+      - 'v*'                     # Запуск при тегах v1.0.0, v2.3, etc.
 
 jobs:
   export:
@@ -14,7 +14,7 @@ jobs:
         include:
           - platform: Linux
             os: ubuntu-latest
-            preset: "Linux"
+            preset: "Linux"              # точно как в export_presets.cfg
             extension: ".x86_64"
           - platform: macOS
             os: macos-latest
@@ -22,7 +22,7 @@ jobs:
             extension: ".zip"
           - platform: Windows
             os: windows-latest
-            preset: "Windows Desktop"
+            preset: "Windows Desktop"     # с пробелом, в кавычках
             extension: ".exe"
 
     steps:
@@ -32,19 +32,26 @@ jobs:
       - name: Setup Godot
         uses: chickensoft-games/setup-godot@v2
         with:
-          version: 4.2.1   # укажите вашу версию Godot, например 4.2.1, 4.3 и т.д.
+          version: 4.2.1               # ваша версия
           include-templates: true
+
+      # Отладочный шаг: показать все доступные пресеты
+      - name: List export presets
+        run: |
+          echo "=== Список пресетов ==="
+          godot --headless --list-export-presets --path .
 
       - name: Export game
         run: |
           mkdir -p build
-          godot --headless --export-release "${{ matrix.preset }}" "build/game-${{ matrix.platform }}${{ matrix.extension }}"
+          godot --headless --export-release "${{ matrix.preset }}" "build/game-${{ matrix.platform }}${{ matrix.extension }}" --path .
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: game-${{ matrix.platform }}
           path: build/game-${{ matrix.platform }}${{ matrix.extension }}
+        if: always()   # загружаем даже если предупреждение, чтобы увидеть, что создалось
 
   release:
     name: Create Release and Upload Assets
