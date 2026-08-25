@@ -32,8 +32,9 @@ jobs:
           include-templates: true
           cache: true
 
-      # ----- ОТЛАДКА: проверка файлов -----
+      # ----- ОТЛАДКА: проверка файлов (используем bash) -----
       - name: Проверка наличия файлов
+        shell: bash
         run: |
           echo "=== Содержимое корневой папки ==="
           ls -la
@@ -43,12 +44,14 @@ jobs:
           head -n 20 project.godot || echo "Файл не найден"
 
       - name: Список доступных пресетов
+        shell: bash
         run: |
           echo "=== ДОСТУПНЫЕ ПРЕСЕТЫ ==="
           godot --headless --list-export-presets --path . 2>&1
 
       # ----- ЭКСПОРТ -----
       - name: Экспорт игры
+        shell: bash
         run: |
           mkdir -p build
           echo "Запуск экспорта для пресета: ${{ matrix.preset }}"
