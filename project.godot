@@ -11,17 +11,18 @@ config_version=5
 [application]
 
 config/name="Asteroid Radar"
-run/main_scene="uid://bfq7y60w4udq5"
+run/main_scene="res://main.tscn"
 config/features=PackedStringArray("4.7", "Mobile")
 config/icon="res://icon.svg"
 
 [autoload]
+[autoload]
 
-GameManager="*uid://b46y82n13ut8b"
-FontManager="*uid://dd6mje68l5vuv"
-SettingsManager="*uid://dr74iq5vwxpc4"
-AudioManager="*uid://cyhiejiepqcq5"
-TranslationManager="*uid://dkc10j2m13f8f"
+AudioManager="*res://audio_manager.gd"
+SettingsManager="*res://settings_manager.gd"
+TranslationManager="*res://translation_manager.gd"
+FontManager="*res://font_manager.gd"
+GameManager="*res://game_manager.gd"
 
 [display]
 
