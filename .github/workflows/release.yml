@@ -15,15 +15,11 @@ jobs:
           - platform: Linux
             os: ubuntu-latest
             preset: "Linux"
-            extension: ".x86_64"
-          - platform: macOS
-            os: macos-latest
-            preset: "macOS"
-            extension: ".zip"
+            artifact_name: "AsteroidRadar_Linux.x86_64"
           - platform: Windows
             os: windows-latest
             preset: "Windows Desktop"
-            extension: ".exe"
+            artifact_name: "AsteroidRadar_Windows.exe"
 
     steps:
       - name: Checkout code
@@ -32,15 +28,40 @@ jobs:
       - name: Setup Godot
         uses: chickensoft-games/setup-godot@v2
         with:
-          version: 4.7.1            # ваша текущая версия
+          version: 4.7.1
           include-templates: true
           cache: true
+
+      # ----- ОТЛАДКА: проверка файлов -----
+      - name: Проверка наличия файлов
+        run: |
+          echo "=== Содержимое корневой папки ==="
+          ls -la
+          echo "=== Проверка export_presets.cfg ==="
+          head -n 20 export_presets.cfg || echo "Файл не найден"
+          echo "=== Проверка project.godot ==="
+          head -n 20 project.godot || echo "Файл не найден"
+
+      - name: Список доступных пресетов
+        run: |
+          echo "=== ДОСТУПНЫЕ ПРЕСЕТЫ ==="
+          godot --headless --list-export-presets --path . 2>&1
+
+      # ----- ЭКСПОРТ -----
+      - name: Экспорт игры
+        run: |
+          mkdir -p build
+          echo "Запуск экспорта для пресета: ${{ matrix.preset }}"
+          godot --headless --export-release "${{ matrix.preset }}" "build/${{ matrix.artifact_name }}" --path . --verbose
+          echo "Код возврата: $?"
+          echo "Содержимое папки build:"
+          ls -la build/ || echo "Папка build пуста"
 
       - name: Загрузка артефакта
         uses: actions/upload-artifact@v4
         with:
-          name: AsteroidRadar_${{ matrix.platform }}
-          path: build/AsteroidRadar_${{ matrix.platform }}${{ matrix.extension }}
+          name: ${{ matrix.artifact_name }}
+          path: build/${{ matrix.artifact_name }}
         if: always()
 
   release:
