@@ -7,8 +7,20 @@ on:
 
 jobs:
   export:
-    name: Export for Linux
-    runs-on: ubuntu-latest
+    name: Export for ${{ matrix.platform }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - platform: Linux
+            os: ubuntu-latest
+            preset: "Linux"
+            artifact_name: "AsteroidRadar_Linux.x86_64"
+          - platform: Windows
+            os: windows-latest
+            preset: "Windows Desktop"
+            artifact_name: "AsteroidRadar_Windows.exe"
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -20,35 +32,19 @@ jobs:
           include-templates: true
           cache: true
 
-      - name: Импорт проекта
-        shell: bash
-        run: |
-          echo "=== Импорт проекта ==="
-          godot --headless --import --path . --quit 2>&1
-          echo "=== Проверка .godot ==="
-          ls -la .godot/ || echo ".godot не создан"
-
-      - name: Список доступных пресетов
-        shell: bash
-        run: |
-          echo "=== ДОСТУПНЫЕ ПРЕСЕТЫ ==="
-          godot --headless --list-export-presets --path . --quit 2>&1
-
-      - name: Экспорт игры
+      - name: Export game
         shell: bash
         run: |
           mkdir -p build
-          echo "Запуск экспорта для пресета: Linux"
-          godot --headless --export-release "Linux" "build/AsteroidRadar_Linux.x86_64" --path . --quit --verbose 2>&1
-          echo "Код возврата: $?"
-          echo "Содержимое папки build:"
-          ls -la build/ || echo "Папка build пуста"
+          godot --headless --export-release "${{ matrix.preset }}" "build/${{ matrix.artifact_name }}" --path . --quit --verbose
+          echo "Export exit code: $?"
+          ls -la build/
 
-      - name: Загрузка артефакта
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: AsteroidRadar_Linux
-          path: build/AsteroidRadar_Linux.x86_64
+          name: ${{ matrix.artifact_name }}
+          path: build/${{ matrix.artifact_name }}
         if: always()
 
   release:
@@ -68,4 +64,4 @@ jobs:
         with:
           files: artifacts/**/*
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}   # или GITHUB_TOKEN, если настроены права
