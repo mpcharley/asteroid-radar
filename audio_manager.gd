@@ -1,7 +1,7 @@
 # AudioManager.gd
 extends Node
 # ============================================================
-# Менеджер звуков и музыки. Учитывает настройки из SettingsManager.
+# Менеджер звуков и музыки. Громкость регулируется через SettingsManager.
 # ============================================================
 
 var music_stream: AudioStream
@@ -20,7 +20,7 @@ var alarm_active: bool = false
 
 
 func _ready() -> void:
-	# Загружаем звуки (заглушка, если файлов нет)
+	# Загружаем звуки
 	music_stream = load("res://sounds/music.ogg") if ResourceLoader.exists("res://sounds/music.ogg") else null
 	radar_sound = load("res://sounds/radar.ogg") if ResourceLoader.exists("res://sounds/radar.ogg") else null
 	shot_sound = load("res://sounds/shot.ogg") if ResourceLoader.exists("res://sounds/shot.ogg") else null
@@ -31,38 +31,51 @@ func _ready() -> void:
 	add_child(music_player)
 	if music_stream:
 		music_player.stream = music_stream
-		music_player.volume_db = -10
-		music_player.autoplay
+		music_player.volume_db = linear_to_db(SettingsManager.music_volume)
+		music_player.autoplay = true
 
 	radar_player = AudioStreamPlayer.new()
 	if radar_sound:
 		radar_player.stream = radar_sound
-	radar_player.volume_db = -15
+	radar_player.volume_db = linear_to_db(SettingsManager.radar_volume)
 	add_child(radar_player)
 
 	shot_player = AudioStreamPlayer.new()
 	if shot_sound:
 		shot_player.stream = shot_sound
-	shot_player.volume_db = -20
+	shot_player.volume_db = linear_to_db(SettingsManager.shot_volume)
 	add_child(shot_player)
 
 	alarm_player = AudioStreamPlayer.new()
 	if alarm_sound:
 		alarm_player.stream = alarm_sound
-	alarm_player.volume_db = -3
+	alarm_player.volume_db = linear_to_db(SettingsManager.alarm_volume)
 	add_child(alarm_player)
 
-	# Запускаем музыку, если включена
-	if music_stream and SettingsManager.music_enabled:
+	# Подписываемся на изменение настроек (для обновления громкости)
+	SettingsManager.settings_changed.connect(_update_volumes)
+
+
+func _update_volumes() -> void:
+	"""Обновляет громкость всех плееров при изменении настроек."""
+	music_player.volume_db = linear_to_db(SettingsManager.music_volume)
+	radar_player.volume_db = linear_to_db(SettingsManager.radar_volume)
+	shot_player.volume_db = linear_to_db(SettingsManager.shot_volume)
+	alarm_player.volume_db = linear_to_db(SettingsManager.alarm_volume)
+	
+	# Если громкость музыки равна 0, останавливаем плеер, иначе запускаем, если ещё не играет
+	if SettingsManager.music_volume == 0:
+		music_player.stop()
+	elif not music_player.playing and music_stream:
 		music_player.play()
 
 
 func _process(delta: float) -> void:
 	if get_tree().paused:
 		return
-	if radar_sound == null or not SettingsManager.sounds_enabled:
+	if radar_sound == null or SettingsManager.radar_volume == 0:
 		return
-
+	
 	radar_timer += delta
 	if radar_timer >= RADAR_INTERVAL:
 		radar_timer = 0.0
@@ -71,13 +84,13 @@ func _process(delta: float) -> void:
 
 # -------------------- Публичные методы --------------------
 func play_shot() -> void:
-	if shot_sound == null or not SettingsManager.sounds_enabled:
+	if shot_sound == null or SettingsManager.shot_volume == 0:
 		return
 	shot_player.play()
 
 
 func set_alarm(active: bool) -> void:
-	if alarm_sound == null or not SettingsManager.sounds_enabled:
+	if alarm_sound == null or SettingsManager.alarm_volume == 0:
 		return
 	if active and not alarm_active:
 		alarm_active = true
@@ -94,7 +107,7 @@ func pause_music() -> void:
 
 
 func resume_music() -> void:
-	if music_stream == null or not SettingsManager.music_enabled:
+	if music_stream == null or SettingsManager.music_volume == 0:
 		return
 	music_player.play()
 
