@@ -7,20 +7,8 @@ on:
 
 jobs:
   export:
-    name: Export for ${{ matrix.platform }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        include:
-          - platform: Linux
-            os: ubuntu-latest
-            preset: "Linux"
-            artifact_name: "AsteroidRadar_Linux.x86_64"
-          - platform: Windows
-            os: windows-latest
-            preset: "Windows Desktop"
-            artifact_name: "AsteroidRadar_Windows.exe"
-
+    name: Export for Linux
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -32,8 +20,15 @@ jobs:
           include-templates: true
           cache: true
 
-      # ----- ОТЛАДКА: проверка файлов (используем bash) -----
-      - name: Проверка наличия файлов
+      # ----- ИМПОРТ (ВАЖНО!) -----
+      - name: Импорт проекта
+        shell: bash
+        run: |
+          echo "=== Импорт проекта ==="
+          godot --headless --import --path . 2>&1
+
+      # ----- ОТЛАДКА -----
+      - name: Проверка файлов
         shell: bash
         run: |
           echo "=== Содержимое корневой папки ==="
@@ -49,13 +44,12 @@ jobs:
           echo "=== ДОСТУПНЫЕ ПРЕСЕТЫ ==="
           godot --headless --list-export-presets --path . 2>&1
 
-      # ----- ЭКСПОРТ -----
       - name: Экспорт игры
         shell: bash
         run: |
           mkdir -p build
-          echo "Запуск экспорта для пресета: ${{ matrix.preset }}"
-          godot --headless --export-release "${{ matrix.preset }}" "build/${{ matrix.artifact_name }}" --path . --verbose
+          echo "Запуск экспорта для пресета: Linux"
+          godot --headless --export-release "Linux" "build/AsteroidRadar_Linux.x86_64" --path . --verbose
           echo "Код возврата: $?"
           echo "Содержимое папки build:"
           ls -la build/ || echo "Папка build пуста"
@@ -63,8 +57,8 @@ jobs:
       - name: Загрузка артефакта
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.artifact_name }}
-          path: build/${{ matrix.artifact_name }}
+          name: AsteroidRadar_Linux
+          path: build/AsteroidRadar_Linux.x86_64
         if: always()
 
   release:
