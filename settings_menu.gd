@@ -1,3 +1,4 @@
+# settings_menu.gd
 extends Control
 
 signal closed
@@ -6,7 +7,7 @@ var diff_buttons: Array = []
 
 
 func _ready() -> void:
-	# Строим интерфейс
+	# Настройка корневого узла
 	anchor_left = 0.0
 	anchor_top = 0.0
 	anchor_right = 1.0
@@ -14,6 +15,7 @@ func _ready() -> void:
 	mouse_filter = MOUSE_FILTER_STOP
 	z_index = 100
 
+	# Фон
 	var bg = ColorRect.new()
 	bg.color = Color(0, 0, 0, 0.7)
 	bg.anchor_left = 0.0
@@ -22,6 +24,7 @@ func _ready() -> void:
 	bg.anchor_bottom = 1.0
 	add_child(bg)
 
+	# Основной контейнер
 	var vbox = VBoxContainer.new()
 	vbox.anchor_left = 0.5
 	vbox.anchor_top = 0.5
@@ -109,6 +112,28 @@ func _ready() -> void:
 	sounds_check.pressed.connect(_on_sounds_toggled.bind(sounds_check))
 	sound_hbox.add_child(sounds_check)
 
+	# ---------- Автобой ----------
+	var auto_label = Label.new()
+	auto_label.text = TranslationManager.get_text("autobattle")+":"
+	auto_label.add_theme_font_override("font", FontManager.custom_font)
+	auto_label.add_theme_font_size_override("font_size", 16)
+	auto_label.modulate = Color.WHITE
+	vbox.add_child(auto_label)
+
+	var auto_hbox = HBoxContainer.new()
+	auto_hbox.add_theme_constant_override("separation", 10)
+	vbox.add_child(auto_hbox)
+
+	var auto_check = CheckButton.new()
+	auto_check.button_pressed = SettingsManager.autobattle_enabled
+	auto_check.add_theme_font_override("font", FontManager.custom_font)
+	_update_autobattle_text(auto_check)
+	#auto_check.pressed.connect(_on_autobattle_toggled.bind(auto_check))
+	#auto_check.text = TranslationManager.get_text("is_on")
+	auto_check.pressed.connect(_on_autobattle_toggled.bind(auto_check))
+	auto_hbox.add_child(auto_check)
+	# -----------------------------
+
 	# Язык
 	var lang_label = Label.new()
 	lang_label.text = TranslationManager.get_text("language_label")
@@ -156,6 +181,11 @@ func _ready() -> void:
 	quit_btn.pressed.connect(_on_quit_pressed)
 	action_hbox.add_child(quit_btn)
 
+func _update_autobattle_text(check: CheckButton) -> void:
+	if check.button_pressed:
+		check.text = TranslationManager.get_text("is_on")
+	else:
+		check.text = TranslationManager.get_text("is_off")
 
 func open() -> void:
 	get_tree().paused = true
@@ -188,12 +218,19 @@ func _on_sounds_toggled(check: CheckButton) -> void:
 	check.button_pressed = SettingsManager.sounds_enabled
 
 
+func _on_autobattle_toggled(check: CheckButton) -> void:
+	SettingsManager.toggle_autobattle()
+	check.button_pressed = SettingsManager.autobattle_enabled
+	_update_autobattle_text(check)
+
 func _on_language_selected(lang: int) -> void:
 	SettingsManager.set_language(lang)
 	close_and_free()
 
 
 func _on_restart_pressed() -> void:
+	GameManager.drop_score()
+	#GameManager.score_changed.emit(0)
 	close_and_free()
 	get_tree().reload_current_scene()
 

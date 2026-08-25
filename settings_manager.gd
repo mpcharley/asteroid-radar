@@ -274,11 +274,17 @@ const COLOR_SCHEMES = [
 ]
 
 var current_scheme_index: int = 0
+var autobattle_enabled: bool = false   # по умолчанию включен
 
 
 func _ready() -> void:
 	load_settings()
-
+	
+	
+func toggle_autobattle() -> void:
+	autobattle_enabled = not autobattle_enabled
+	settings_changed.emit()
+	save_settings()
 
 func get_color(key: String) -> Color:
 	var scheme = COLOR_SCHEMES[current_scheme_index]
@@ -346,6 +352,7 @@ func save_settings() -> void:
 	config.set_value("settings", "color_scheme", current_scheme_index)
 	config.set_value("settings", "music_enabled", music_enabled)
 	config.set_value("settings", "sounds_enabled", sounds_enabled)
+	config.set_value("settings", "autobattle", autobattle_enabled)
 	config.set_value("settings", "language", language)
 	config.save("user://settings.cfg")
 
@@ -359,10 +366,12 @@ func load_settings() -> void:
 		music_enabled = config.get_value("settings", "music_enabled", true)
 		sounds_enabled = config.get_value("settings", "sounds_enabled", true)
 		language = config.get_value("settings", "language", Language.EN)
+		autobattle_enabled = config.get_value("settings", "autobattle", true)
 	else:
 		current_difficulty = GameManager.Difficulty.MEDIUM
 		current_scheme_index = 0
 		music_enabled = true
 		sounds_enabled = true
 		language = Language.EN
+		autobattle_enabled = false
 		GameManager.set_difficulty(GameManager.Difficulty.MEDIUM)

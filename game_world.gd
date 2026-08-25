@@ -82,13 +82,22 @@ func _draw() -> void:
 	# Горизонтальная и вертикальная линии
 	draw_line(Vector2(0, rect_size.y / 2), Vector2(rect_size.x, rect_size.y / 2), color, line_width)
 	draw_line(Vector2(rect_size.x / 2, 0), Vector2(rect_size.x / 2, rect_size.y), color, line_width)
+	
+	#Сетка
+	var step: float = 20.0  # расстояние между точками
+	var point_radius: float = 0.4
+	var point_color = color  # используем альтернативный цвет (более бледный)
 
-	# Сетка 3x3
-	for i in range(1, 15):
-		var x: float = rect_size.x * i / 15.0
-		draw_line(Vector2(x, 0), Vector2(x, rect_size.y), color, 0.2)
-		var y: float = rect_size.y * i / 15.0
-		draw_line(Vector2(0, y), Vector2(rect_size.x, y), color_alt, 0.2)
+	# Проходим по всей области экрана с шагом step
+	var x_start = step / 2.0
+	var y_start = step / 2.0
+	while x_start < rect_size.x:
+		var y = y_start
+		while y < rect_size.y:
+			draw_circle(Vector2(x_start, y), point_radius, point_color)
+			y += step
+		x_start += step
+	# ---------------------------------------
 
 	# Прямоугольник в центре
 	var w: float = 100
@@ -193,6 +202,70 @@ func update_asteroid_targets() -> void:
 		child.set_target_count(count)
 
 
+# -------------------- Автоматический выбор свободной цели (для автобоя) --------------------
+func get_best_free_target() -> Asteroid:
+	var asteroids = get_asteroids()
+	if asteroids.is_empty():
+		return null
+
+	# Собираем занятые цели
+	var occupied = []
+	for t in turrets:
+		if t.target != null:
+			occupied.append(t.target)
+
+	# Фильтруем свободные
+	var free = []
+	for a in asteroids:
+		if a.is_destroyed:
+			continue
+		if not occupied.has(a):
+			free.append(a)
+
+	if free.is_empty():
+		return null
+
+	# Выбираем лучшую из свободных по приоритету
+	var criticals = []
+	var large = []
+	var medium = []
+	var small = []
+
+	for a in free:
+		if a.is_critical:
+			criticals.append(a)
+		elif a.size_category == Asteroid.SizeCategory.LARGE:
+			large.append(a)
+		elif a.size_category == Asteroid.SizeCategory.MEDIUM:
+			medium.append(a)
+		else:
+			small.append(a)
+
+	if not criticals.is_empty():
+		return _closest_to_center(criticals)
+	if not large.is_empty():
+		return _closest_to_center(large)
+	if not medium.is_empty():
+		return _closest_to_center(medium)
+	if not small.is_empty():
+		return _closest_to_center(small)
+
+	return null
+
+
+func _closest_to_center(asteroids: Array) -> Asteroid:
+	var viewport = get_viewport()
+	var center = viewport.get_visible_rect().size / 2
+	var best = null
+	var best_dist = INF
+	for a in asteroids:
+		var dist = a.position.distance_to(center)
+		if dist < best_dist:
+			best_dist = dist
+			best = a
+	return best
+
+
 # -------------------- Обработка событий астероидов --------------------
 func _on_asteroid_destroyed(asteroid: Asteroid) -> void:
 	for t in turrets:
@@ -226,7 +299,6 @@ func _on_turret_shot_fired(target: Asteroid) -> void:
 
 # -------------------- Список астероидов для UI --------------------
 func get_asteroids() -> Array:
-	#Возвращает массив всех дочерних узлов типа Asteroid.
 	var list = []
 	for child in get_children():
 		if child is Asteroid:
@@ -235,7 +307,6 @@ func get_asteroids() -> Array:
 
 
 func get_asteroid_list() -> Array:
-	#Алиас для get_asteroids() для обратной совместимости.
 	return get_asteroids()
 
 

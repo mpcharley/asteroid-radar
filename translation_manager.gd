@@ -30,6 +30,9 @@ var translations = {
 		"hp_format": "HP: %d/%d",
 		# Звёзды (заголовок панели)
 		"stars_title": "Stars",
+		"autobattle": "Auto-battle",
+		"is_on":"ON",
+		"is_off":"OFF",
 	},
 	"ru": {
 		"settings_title": "НАСТРОЙКИ",
@@ -52,6 +55,9 @@ var translations = {
 		"game_over": "ИГРА ОКОНЧЕНА",
 		"hp_format": "HP: %d/%d",
 		"stars_title": "Звёзды",
+		"autobattle": "Автобой",
+		"is_on":"Включен",
+		"is_off":"Выключен",
 	}
 }
 
