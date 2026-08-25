@@ -36,26 +36,12 @@ jobs:
           include-templates: true
           cache: true
 
-      # ----- ОТЛАДОЧНЫЕ ШАГИ -----
-      - name: Показать список пресетов (полный вывод)
-        run: |
-          echo "=== ДОСТУПНЫЕ ПРЕСЕТЫ ==="
-          godot --headless --list-export-presets --path . 2>&1
-
-      - name: Попытка экспорта с выводом ошибок
-        run: |
-          echo "Запуск экспорта для пресета: ${{ matrix.preset }}"
-          godot --headless --export-release "${{ matrix.preset }}" "build/game-${{ matrix.platform }}${{ matrix.extension }}" 2>&1
-          echo "Код возврата: $?"
-          echo "Содержимое папки build:"
-          ls -la build/ || echo "Папка build пуста или не существует"
-
       - name: Загрузка артефакта
         uses: actions/upload-artifact@v4
         with:
           name: game-${{ matrix.platform }}
-          path: build/game-${{ matrix.platform }}${{ matrix.extension }}
-        if: always()   # загружаем даже если файла нет – увидим предупреждение
+          path: build/AsteroidRadar_${{ matrix.platform }}${{ matrix.extension }}
+        if: always()
 
   release:
     name: Create Release and Upload Assets
