@@ -20,19 +20,11 @@ jobs:
           include-templates: true
           cache: true
 
-      # ----- ИМПОРТ ПРОЕКТА (с отключением графики) -----
       - name: Импорт проекта
         shell: bash
         run: |
           echo "=== Импорт проекта ==="
-          godot --headless --import --path . --quit --display-driver headless 2>&1
-
-      # ----- ОТЛАДКА -----
-      - name: Проверка файлов
-        shell: bash
-        run: |
-          echo "=== Содержимое корневой папки ==="
-          ls -la
+          godot --headless --import --path . --quit 2>&1
           echo "=== Проверка .godot ==="
           ls -la .godot/ || echo ".godot не создан"
 
@@ -40,15 +32,14 @@ jobs:
         shell: bash
         run: |
           echo "=== ДОСТУПНЫЕ ПРЕСЕТЫ ==="
-          godot --headless --list-export-presets --path . --display-driver headless 2>&1
+          godot --headless --list-export-presets --path . --quit 2>&1
 
-      # ----- ЭКСПОРТ -----
       - name: Экспорт игры
         shell: bash
         run: |
           mkdir -p build
           echo "Запуск экспорта для пресета: Linux"
-          godot --headless --export-release "Linux" "build/AsteroidRadar_Linux.x86_64" --path . --display-driver headless --verbose
+          godot --headless --export-release "Linux" "build/AsteroidRadar_Linux.x86_64" --path . --quit --verbose 2>&1
           echo "Код возврата: $?"
           echo "Содержимое папки build:"
           ls -la build/ || echo "Папка build пуста"
