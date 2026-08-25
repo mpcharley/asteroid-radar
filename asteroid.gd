@@ -151,8 +151,8 @@ func _draw() -> void:
 	# Вложенные красные квадраты (с миганием)
 	if target_count > 0:
 		var target_color_ = Color(target_color.r, target_color.g, target_color.b, alpha * target_color.a)
-		draw_line(Vector2(size.x/2,size.y/4), Vector2(size.x/2, size.y/4*3), target_color_, 2.0)
-		draw_line(Vector2(size.x/4,size.y/2), Vector2(size.x/4*3, size.y/2), target_color_, 2.0)
+		draw_line(Vector2(size.x / 2, size.y / 4), Vector2(size.x / 2, size.y / 4 * 3), target_color_, 2.0)
+		draw_line(Vector2(size.x / 4, size.y / 2), Vector2(size.x / 4 * 3, size.y / 2), target_color_, 2.0)
 		var step = 10.0
 		var max_rect = size.x
 		for i in range(target_count):
@@ -187,9 +187,12 @@ func update_label_text() -> void:
 
 func get_category_string() -> String:
 	match size_category:
-		SizeCategory.SMALL:  return "S"
-		SizeCategory.MEDIUM: return "M"
-		SizeCategory.LARGE:  return "L"
+		SizeCategory.SMALL:
+			return "S"
+		SizeCategory.MEDIUM:
+			return "M"
+		SizeCategory.LARGE:
+			return "L"
 	return "?"
 
 
@@ -206,7 +209,7 @@ func generate_name() -> String:
 func collide() -> void:
 	if is_destroyed:
 		return
-	emit_signal("asteroid_collided", self)
+	asteroid_collided.emit(self)
 	destroy()
 
 
@@ -214,7 +217,7 @@ func destroy() -> void:
 	if is_destroyed:
 		return
 	is_destroyed = true
-	emit_signal("asteroid_destroyed", self)
+	asteroid_destroyed.emit(self)
 	queue_free()
 
 

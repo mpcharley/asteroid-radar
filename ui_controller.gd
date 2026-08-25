@@ -8,7 +8,6 @@ extends Control
 signal settings_menu_toggled()
 
 func _ready() -> void:
-	# Убеждаемся, что этот узел обрабатывает ввод всегда
 	process_mode = PROCESS_MODE_ALWAYS
 
 func _input(event: InputEvent) -> void:

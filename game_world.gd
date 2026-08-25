@@ -73,7 +73,7 @@ func _draw() -> void:
 
 	# Большой круг (радар)
 	draw_circle(center, rect_size.y / 2, SettingsManager.get_color("circle_color"), false, line_width)
-	draw_circle(center, rect_size.y / 2-10, SettingsManager.get_color("circle_color"), false, line_width)
+	draw_circle(center, rect_size.y / 2 - 10, SettingsManager.get_color("circle_color"), false, line_width)
 	draw_circle(center, rect_size.y / 3, SettingsManager.get_color("circle_color"), false, line_width)
 
 	# Рамка
@@ -83,7 +83,7 @@ func _draw() -> void:
 	draw_line(Vector2(0, rect_size.y / 2), Vector2(rect_size.x, rect_size.y / 2), color, line_width)
 	draw_line(Vector2(rect_size.x / 2, 0), Vector2(rect_size.x / 2, rect_size.y), color, line_width)
 
-	## Сетка 3x3
+	# Сетка 3x3
 	for i in range(1, 15):
 		var x: float = rect_size.x * i / 15.0
 		draw_line(Vector2(x, 0), Vector2(x, rect_size.y), color, 0.2)
@@ -226,7 +226,7 @@ func _on_turret_shot_fired(target: Asteroid) -> void:
 
 # -------------------- Список астероидов для UI --------------------
 func get_asteroids() -> Array:
-	"""Возвращает массив всех дочерних узлов типа Asteroid."""
+	#Возвращает массив всех дочерних узлов типа Asteroid.
 	var list = []
 	for child in get_children():
 		if child is Asteroid:
@@ -235,7 +235,7 @@ func get_asteroids() -> Array:
 
 
 func get_asteroid_list() -> Array:
-	"""Алиас для get_asteroids() для обратной совместимости."""
+	#Алиас для get_asteroids() для обратной совместимости.
 	return get_asteroids()
 
 

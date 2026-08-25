@@ -84,6 +84,5 @@ func update_info_panel_colors() -> void:
 func refresh() -> void:
 	if get_viewport():
 		var viewport_size = get_viewport().get_visible_rect().size
-		# Получаем ширину панели звёзд (можно вычислить)
-		var stars_width = viewport_size.x * 0.125 + viewport_size.x * 0.01 * 2  # panel_width + margin
+		var stars_width = viewport_size.x * 0.125 + viewport_size.x * 0.01 * 2
 		update_info_panel(viewport_size, stars_width)

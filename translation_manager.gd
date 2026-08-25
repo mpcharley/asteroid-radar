@@ -19,7 +19,6 @@ var translations = {
 		"language_label": "Language:",
 		"restart": "RESTART",
 		"quit": "QUIT",
-		
 		# Панели
 		"energy": "ENERGY",
 		"hp": "HP",
@@ -27,10 +26,8 @@ var translations = {
 		"asteroids": "ASTEROIDS",
 		"no_asteroids": "0",
 		"game_over": "GAME OVER",
-		
 		# Астероиды (будут использоваться в списке)
 		"hp_format": "HP: %d/%d",
-		
 		# Звёзды (заголовок панели)
 		"stars_title": "Stars",
 	},
@@ -47,16 +44,13 @@ var translations = {
 		"language_label": "Язык:",
 		"restart": "РЕСТАРТ",
 		"quit": "ВЫХОД",
-		
 		"energy": "ЭНЕРГИЯ",
 		"hp": "ЗДОРОВЬЕ",
 		"score": "СЧЁТ",
 		"asteroids": "АСТЕРОИДЫ",
 		"no_asteroids": "0",
 		"game_over": "ИГРА ОКОНЧЕНА",
-		
 		"hp_format": "HP: %d/%d",
-		
 		"stars_title": "Звёзды",
 	}
 }
@@ -66,4 +60,4 @@ func get_text(key: String) -> String:
 	var lang = "en" if SettingsManager.language == SettingsManager.Language.EN else "ru"
 	if translations.has(lang) and translations[lang].has(key):
 		return translations[lang][key]
-	return key  # fallback – возвращаем сам ключ
+	return key

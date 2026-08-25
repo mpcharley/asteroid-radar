@@ -49,7 +49,6 @@ func _process(delta: float) -> void:
 		data.pos += data.dir * data.speed * delta
 		if data.pos.x < -margin or data.pos.x > screen_size.x + margin or data.pos.y < -margin or data.pos.y > screen_size.y + margin:
 			var new_data = create_new_star()
-			print("Вышла из экрана", new_data["star_name"])
 			data.pos = new_data.pos
 			data.dir = new_data.dir
 			data.speed = new_data.speed
@@ -122,7 +121,6 @@ func create_info_panel() -> void:
 
 
 func update_info_panel_title() -> void:
-	# обновляем заголовок при смене языка (используется в update_info_panel)
 	update_info_panel(get_viewport().get_visible_rect().size)
 
 

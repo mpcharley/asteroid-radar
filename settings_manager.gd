@@ -16,7 +16,7 @@ var sounds_enabled: bool = true
 enum Language { EN, RU }
 var language: int = Language.EN
 
-# Цветовые схемы (без изменений)
+# Цветовые схемы
 const COLOR_SCHEMES = [
 	{
 		"name": "CLASSIC",
@@ -40,74 +40,76 @@ const COLOR_SCHEMES = [
 			"grid_line_alt": Color.AQUA,
 			"circle_color": Color.AQUAMARINE
 		}
-	},{
-  "name": "NEBULA",
-  "colors": {
-	"bg": Color(0.03, 0.01, 0.08),
-	"ui_border": Color(0.6, 0.3, 1.0),
-	"ui_bg": Color(0.1, 0.02, 0.2, 0.4),
-	"ui_text_energy": Color(0.7, 0.5, 1.0),
-	"ui_text_hp": Color(1.0, 0.3, 0.8),
-	"ui_text_score": Color(0.4, 0.8, 1.0),
-	"ui_text_stars": Color(0.8, 0.6, 1.0),
-	"asteroid_border": Color(0.5, 0.2, 0.8),
-	"asteroid_hover": Color(0.7, 0.4, 1.0),
-	"asteroid_target": Color(1.0, 0.2, 0.6),
-	"asteroid_text": Color(0.6, 0.8, 1.0),
-	"cursor_line": Color(0.5, 0.5, 1.0),
-	"cursor_rect": Color(0.5, 0.5, 1.0),
-	"radar_line": Color(0.3, 0.3, 1.0),
-	"shot_line": Color(0.2, 0.4, 1.0),
-	"grid_line": Color(0.2, 0.1, 0.4),
-	"grid_line_alt": Color(0.4, 0.2, 0.6),
-	"circle_color": Color(0.6, 0.4, 1.0)
-  }
-},{
-  "name": "PASTEL",
-  "colors": {
-	"bg": Color(0.08, 0.08, 0.12),
-	"ui_border": Color(0.6, 0.7, 1.0),
-	"ui_bg": Color(0.15, 0.15, 0.25, 0.4),
-	"ui_text_energy": Color(0.8, 0.9, 1.0),
-	"ui_text_hp": Color(1.0, 0.6, 0.8),
-	"ui_text_score": Color(0.7, 1.0, 0.8),
-	"ui_text_stars": Color(0.9, 0.8, 1.0),
-	"asteroid_border": Color(0.5, 0.6, 0.8),
-	"asteroid_hover": Color(0.7, 0.8, 1.0),
-	"asteroid_target": Color(1.0, 0.5, 0.5),
-	"asteroid_text": Color(0.8, 0.9, 1.0),
-	"cursor_line": Color(0.6, 0.8, 1.0),
-	"cursor_rect": Color(0.6, 0.8, 1.0),
-	"radar_line": Color(0.5, 0.7, 0.9),
-	"shot_line": Color(0.4, 0.9, 0.9),
-	"grid_line": Color(0.2, 0.2, 0.3),
-	"grid_line_alt": Color(0.3, 0.3, 0.4),
-	"circle_color": Color(0.5, 0.7, 1.0)
-  }
-},
+	},
 	{
-  "name": "GOLD",
-  "colors": {
-	"bg": Color(0.05, 0.03, 0.0),
-	"ui_border": Color(1.0, 0.8, 0.2),
-	"ui_bg": Color(0.1, 0.08, 0.0, 0.4),
-	"ui_text_energy": Color(1.0, 0.9, 0.4),
-	"ui_text_hp": Color(1.0, 0.3, 0.3),
-	"ui_text_score": Color(1.0, 0.8, 0.2),
-	"ui_text_stars": Color(1.0, 0.9, 0.5),
-	"asteroid_border": Color(0.8, 0.6, 0.1),
-	"asteroid_hover": Color(1.0, 0.8, 0.3),
-	"asteroid_target": Color(1.0, 0.2, 0.2),
-	"asteroid_text": Color(1.0, 0.9, 0.6),
-	"cursor_line": Color(1.0, 0.7, 0.1),
-	"cursor_rect": Color(1.0, 0.7, 0.1),
-	"radar_line": Color(0.8, 0.6, 0.2),
-	"shot_line": Color(1.0, 0.8, 0.0),
-	"grid_line": Color(0.3, 0.2, 0.0),
-	"grid_line_alt": Color(0.6, 0.4, 0.0),
-	"circle_color": Color(1.0, 0.8, 0.2)
-  }
-},
+		"name": "NEBULA",
+		"colors": {
+			"bg": Color(0.03, 0.01, 0.08),
+			"ui_border": Color(0.6, 0.3, 1.0),
+			"ui_bg": Color(0.1, 0.02, 0.2, 0.4),
+			"ui_text_energy": Color(0.7, 0.5, 1.0),
+			"ui_text_hp": Color(1.0, 0.3, 0.8),
+			"ui_text_score": Color(0.4, 0.8, 1.0),
+			"ui_text_stars": Color(0.8, 0.6, 1.0),
+			"asteroid_border": Color(0.5, 0.2, 0.8),
+			"asteroid_hover": Color(0.7, 0.4, 1.0),
+			"asteroid_target": Color(1.0, 0.2, 0.6),
+			"asteroid_text": Color(0.6, 0.8, 1.0),
+			"cursor_line": Color(0.5, 0.5, 1.0),
+			"cursor_rect": Color(0.5, 0.5, 1.0),
+			"radar_line": Color(0.3, 0.3, 1.0),
+			"shot_line": Color(0.2, 0.4, 1.0),
+			"grid_line": Color(0.2, 0.1, 0.4),
+			"grid_line_alt": Color(0.4, 0.2, 0.6),
+			"circle_color": Color(0.6, 0.4, 1.0)
+		}
+	},
+	{
+		"name": "PASTEL",
+		"colors": {
+			"bg": Color(0.08, 0.08, 0.12),
+			"ui_border": Color(0.6, 0.7, 1.0),
+			"ui_bg": Color(0.15, 0.15, 0.25, 0.4),
+			"ui_text_energy": Color(0.8, 0.9, 1.0),
+			"ui_text_hp": Color(1.0, 0.6, 0.8),
+			"ui_text_score": Color(0.7, 1.0, 0.8),
+			"ui_text_stars": Color(0.9, 0.8, 1.0),
+			"asteroid_border": Color(0.5, 0.6, 0.8),
+			"asteroid_hover": Color(0.7, 0.8, 1.0),
+			"asteroid_target": Color(1.0, 0.5, 0.5),
+			"asteroid_text": Color(0.8, 0.9, 1.0),
+			"cursor_line": Color(0.6, 0.8, 1.0),
+			"cursor_rect": Color(0.6, 0.8, 1.0),
+			"radar_line": Color(0.5, 0.7, 0.9),
+			"shot_line": Color(0.4, 0.9, 0.9),
+			"grid_line": Color(0.2, 0.2, 0.3),
+			"grid_line_alt": Color(0.3, 0.3, 0.4),
+			"circle_color": Color(0.5, 0.7, 1.0)
+		}
+	},
+	{
+		"name": "GOLD",
+		"colors": {
+			"bg": Color(0.05, 0.03, 0.0),
+			"ui_border": Color(1.0, 0.8, 0.2),
+			"ui_bg": Color(0.1, 0.08, 0.0, 0.4),
+			"ui_text_energy": Color(1.0, 0.9, 0.4),
+			"ui_text_hp": Color(1.0, 0.3, 0.3),
+			"ui_text_score": Color(1.0, 0.8, 0.2),
+			"ui_text_stars": Color(1.0, 0.9, 0.5),
+			"asteroid_border": Color(0.8, 0.6, 0.1),
+			"asteroid_hover": Color(1.0, 0.8, 0.3),
+			"asteroid_target": Color(1.0, 0.2, 0.2),
+			"asteroid_text": Color(1.0, 0.9, 0.6),
+			"cursor_line": Color(1.0, 0.7, 0.1),
+			"cursor_rect": Color(1.0, 0.7, 0.1),
+			"radar_line": Color(0.8, 0.6, 0.2),
+			"shot_line": Color(1.0, 0.8, 0.0),
+			"grid_line": Color(0.3, 0.2, 0.0),
+			"grid_line_alt": Color(0.6, 0.4, 0.0),
+			"circle_color": Color(1.0, 0.8, 0.2)
+		}
+	},
 	{
 		"name": "INFERNO",
 		"colors": {
@@ -155,29 +157,29 @@ const COLOR_SCHEMES = [
 		}
 	},
 	{
-  "name": "SUNSET",
-	  "colors": {
-		"bg": Color(0.08, 0.02, 0.04),
-		"ui_border": Color(1.0, 0.5, 0.2),
-		"ui_bg": Color(0.2, 0.05, 0.08, 0.4),
-		"ui_text_energy": Color(1.0, 0.7, 0.3),
-		"ui_text_hp": Color(1.0, 0.3, 0.5),
-		"ui_text_score": Color(1.0, 0.8, 0.4),
-		"ui_text_stars": Color(1.0, 0.6, 0.2),
-		"asteroid_border": Color(1.0, 0.4, 0.1),
-		"asteroid_hover": Color(1.0, 0.8, 0.4),
-		"asteroid_target": Color(1.0, 0.2, 0.2),
-		"asteroid_text": Color(1.0, 0.9, 0.6),
-		"cursor_line": Color(1.0, 0.6, 0.2),
-		"cursor_rect": Color(1.0, 0.6, 0.2),
-		"radar_line": Color(1.0, 0.5, 0.3),
-		"shot_line": Color(1.0, 0.7, 0.1),
-		"grid_line": Color(0.8, 0.3, 0.1),
-		"grid_line_alt": Color(1.0, 0.5, 0.2),
-		"circle_color": Color(1.0, 0.5, 0.2)
-  }
-},
-{
+		"name": "SUNSET",
+		"colors": {
+			"bg": Color(0.08, 0.02, 0.04),
+			"ui_border": Color(1.0, 0.5, 0.2),
+			"ui_bg": Color(0.2, 0.05, 0.08, 0.4),
+			"ui_text_energy": Color(1.0, 0.7, 0.3),
+			"ui_text_hp": Color(1.0, 0.3, 0.5),
+			"ui_text_score": Color(1.0, 0.8, 0.4),
+			"ui_text_stars": Color(1.0, 0.6, 0.2),
+			"asteroid_border": Color(1.0, 0.4, 0.1),
+			"asteroid_hover": Color(1.0, 0.8, 0.4),
+			"asteroid_target": Color(1.0, 0.2, 0.2),
+			"asteroid_text": Color(1.0, 0.9, 0.6),
+			"cursor_line": Color(1.0, 0.6, 0.2),
+			"cursor_rect": Color(1.0, 0.6, 0.2),
+			"radar_line": Color(1.0, 0.5, 0.3),
+			"shot_line": Color(1.0, 0.7, 0.1),
+			"grid_line": Color(0.8, 0.3, 0.1),
+			"grid_line_alt": Color(1.0, 0.5, 0.2),
+			"circle_color": Color(1.0, 0.5, 0.2)
+		}
+	},
+	{
 		"name": "WHITE",
 		"colors": {
 			"bg": DEFAULT_LIGHT,
@@ -224,28 +226,28 @@ const COLOR_SCHEMES = [
 		}
 	},
 	{
-  "name": "FOREST",
-  "colors": {
-	"bg": Color(0.02, 0.08, 0.02),
-	"ui_border": Color(0.2, 0.8, 0.2),
-	"ui_bg": Color(0.05, 0.15, 0.05, 0.4),
-	"ui_text_energy": Color(0.5, 1.0, 0.5),
-	"ui_text_hp": Color(1.0, 0.4, 0.4),
-	"ui_text_score": Color(0.8, 1.0, 0.4),
-	"ui_text_stars": Color(0.6, 1.0, 0.6),
-	"asteroid_border": Color(0.3, 0.7, 0.2),
-	"asteroid_hover": Color(0.5, 1.0, 0.3),
-	"asteroid_target": Color(1.0, 0.3, 0.3),
-	"asteroid_text": Color(0.7, 1.0, 0.5),
-	"cursor_line": Color(0.3, 1.0, 0.3),
-	"cursor_rect": Color(0.3, 1.0, 0.3),
-	"radar_line": Color(0.2, 0.8, 0.4),
-	"shot_line": Color(0.0, 1.0, 0.2),
-	"grid_line": Color(0.1, 0.5, 0.1),
-	"grid_line_alt": Color(0.2, 0.7, 0.2),
-	"circle_color": Color(0.3, 0.8, 0.3)
-  }
-},
+		"name": "FOREST",
+		"colors": {
+			"bg": Color(0.02, 0.08, 0.02),
+			"ui_border": Color(0.2, 0.8, 0.2),
+			"ui_bg": Color(0.05, 0.15, 0.05, 0.4),
+			"ui_text_energy": Color(0.5, 1.0, 0.5),
+			"ui_text_hp": Color(1.0, 0.4, 0.4),
+			"ui_text_score": Color(0.8, 1.0, 0.4),
+			"ui_text_stars": Color(0.6, 1.0, 0.6),
+			"asteroid_border": Color(0.3, 0.7, 0.2),
+			"asteroid_hover": Color(0.5, 1.0, 0.3),
+			"asteroid_target": Color(1.0, 0.3, 0.3),
+			"asteroid_text": Color(0.7, 1.0, 0.5),
+			"cursor_line": Color(0.3, 1.0, 0.3),
+			"cursor_rect": Color(0.3, 1.0, 0.3),
+			"radar_line": Color(0.2, 0.8, 0.4),
+			"shot_line": Color(0.0, 1.0, 0.2),
+			"grid_line": Color(0.1, 0.5, 0.1),
+			"grid_line_alt": Color(0.2, 0.7, 0.2),
+			"circle_color": Color(0.3, 0.8, 0.3)
+		}
+	},
 	{
 		"name": "PINKY",
 		"colors": {

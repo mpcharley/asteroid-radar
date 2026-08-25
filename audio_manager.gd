@@ -61,7 +61,7 @@ func _process(delta: float) -> void:
 		return
 	if radar_sound == null or not SettingsManager.sounds_enabled:
 		return
-	
+
 	radar_timer += delta
 	if radar_timer >= RADAR_INTERVAL:
 		radar_timer = 0.0

@@ -34,7 +34,7 @@ func try_fire() -> void:
 	if GameManager.spend_energy(cost):
 		current_target.take_damage()
 		shot_fired.emit(current_target)
-		AudioManager.play_shot()   # звук выстрела
+		AudioManager.play_shot()
 		if current_target.is_destroyed:
 			var drop = Asteroid.ENERGY_DROP_MAP[current_target.size_category]
 			GameManager.add_energy(drop)

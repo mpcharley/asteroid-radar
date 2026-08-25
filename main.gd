@@ -77,7 +77,7 @@ func _ready() -> void:
 
 # -------------------- Общие функции для панелей --------------------
 func _create_panel_style() -> StyleBoxFlat:
-	"""Создаёт общий стиль для панелей."""
+	#Создаёт общий стиль для панелей.
 	var style = StyleBoxFlat.new()
 	style.border_width_left = 1
 	style.border_width_right = 1
@@ -89,7 +89,7 @@ func _create_panel_style() -> StyleBoxFlat:
 
 
 func _create_panel(panel: Panel, label: Label, text: String, font: Font, font_size: int, color: Color, z_index: int) -> void:
-	"""Общая настройка панели и метки (без размещения/размеров)."""
+	#Общая настройка панели и метки (без размещения/размеров).
 	panel.add_theme_stylebox_override("panel", _create_panel_style())
 	label.add_theme_font_override("font", font)
 	label.add_theme_font_size_override("font_size", font_size)
@@ -239,7 +239,7 @@ func _on_score_changed(new_score: int) -> void:
 func _on_ship_destroyed() -> void:
 	#get_tree().paused = true
 	#AudioManager.set_music_paused(true)
-	
+
 	var game_over_label = Label.new()
 	game_over_label.text = TranslationManager.get_text("game_over")
 	game_over_label.add_theme_font_override("font", FontManager.custom_font)
@@ -282,7 +282,6 @@ func update_ui_colors() -> void:
 func update_ui_texts() -> void:
 	# Обновляем тексты панелей (не динамические части)
 	if energy_label:
-		# Обновляем префикс, но числа остаются
 		var current_value = energy_label.text.split(":")[1].strip_edges() if ":" in energy_label.text else "0"
 		energy_label.text = TranslationManager.get_text("energy") + ": " + current_value
 	if hp_label:
@@ -292,7 +291,6 @@ func update_ui_texts() -> void:
 		var current_value = score_label.text.split(":")[1].strip_edges() if ":" in score_label.text else "0"
 		score_label.text = TranslationManager.get_text("score") + ": " + current_value
 	if asteroids_label:
-		# Обновляем заголовок панели астероидов
 		var lines = asteroids_label.text.split("\n")
 		if lines.size() > 0:
 			lines[0] = TranslationManager.get_text("asteroids") + ":"
@@ -397,26 +395,14 @@ func open_settings_menu() -> void:
 	color_label.modulate = Color.WHITE
 	vbox.add_child(color_label)
 
-	#var color_hbox = HBoxContainer.new()
-	#color_hbox.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-	#color_hbox.add_theme_constant_override("separation", 10)
-
-	#for i in range(SettingsManager.COLOR_SCHEMES.size()):
-		#var btn = Button.new()
-		#btn.text = SettingsManager.COLOR_SCHEMES[i]["name"]
-		#btn.custom_minimum_size = Vector2(50, 20)
-		#btn.pressed.connect(_on_color_scheme_selected.bind(i))
-		##color_hbox.add_child(btn)
-
 	var color_select = OptionButton.new()
 	for i in range(SettingsManager.COLOR_SCHEMES.size()):
 		color_select.add_item(SettingsManager.COLOR_SCHEMES[i]["name"])
 	var current_index = SettingsManager.current_scheme_index
 	color_select.item_selected.connect(_on_color_scheme_selected)
-	color_select.select(current_index)  # или color_select.selected = current_index
+	color_select.select(current_index)
 	vbox.add_child(color_select)
-	
-	
+
 	# Звук
 	var sound_label = Label.new()
 	sound_label.text = TranslationManager.get_text("sound_label")
@@ -516,7 +502,7 @@ func _on_language_selected(lang: int) -> void:
 
 
 func _on_restart_pressed() -> void:
-	get_tree().paused = false   # Снимаем паузу перед перезагрузкой
+	get_tree().paused = false
 	close_settings_menu()
 	get_tree().reload_current_scene()
 
