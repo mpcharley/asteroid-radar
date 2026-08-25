@@ -110,6 +110,8 @@ func add_score(amount: int) -> void:
 		return
 	score += amount
 
+func drop_score() -> void:
+	score = 0 
 
 func update_spawn_interval() -> void:
 	var multiplier = 1.0

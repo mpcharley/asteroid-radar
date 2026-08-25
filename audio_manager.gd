@@ -32,6 +32,7 @@ func _ready() -> void:
 	if music_stream:
 		music_player.stream = music_stream
 		music_player.volume_db = -10
+		music_player.autoplay
 
 	radar_player = AudioStreamPlayer.new()
 	if radar_sound:
@@ -42,7 +43,7 @@ func _ready() -> void:
 	shot_player = AudioStreamPlayer.new()
 	if shot_sound:
 		shot_player.stream = shot_sound
-	shot_player.volume_db = -5
+	shot_player.volume_db = -20
 	add_child(shot_player)
 
 	alarm_player = AudioStreamPlayer.new()
