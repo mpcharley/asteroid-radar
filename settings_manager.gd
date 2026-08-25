@@ -9,9 +9,6 @@ const DEFAULT_DARK: Color = Color.BLACK
 const DEFAULT_LIGHT: Color = Color.ALICE_BLUE
 
 # Настройки звука
-var music_enabled: bool = true
-var sounds_enabled: bool = true
-
 var music_volume: float = 0.8
 var radar_volume: float = 0.5
 var shot_volume: float = 0.7
@@ -317,20 +314,6 @@ func set_difficulty(diff: int) -> void:
 
 
 # -------------------- Настройки звука --------------------
-func toggle_music() -> void:
-	music_enabled = not music_enabled
-	settings_changed.emit()
-	save_settings()
-	if music_enabled:
-		AudioManager.resume_music()
-	else:
-		AudioManager.pause_music()
-
-
-func toggle_sounds() -> void:
-	sounds_enabled = not sounds_enabled
-	settings_changed.emit()
-	save_settings()
 
 func set_music_volume(value: float) -> void:
 	music_volume = clamp(value, 0.0, 1.0)
