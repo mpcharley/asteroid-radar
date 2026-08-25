@@ -44,9 +44,8 @@ jobs:
 
       - name: Попытка экспорта с выводом ошибок
         run: |
-          mkdir -p build
           echo "Запуск экспорта для пресета: ${{ matrix.preset }}"
-          godot --headless --export-release "${{ matrix.preset }}" "build/game-${{ matrix.platform }}${{ matrix.extension }}" --path . 2>&1
+          godot --headless --export-release "${{ matrix.preset }}" "build/game-${{ matrix.platform }}${{ matrix.extension }}" 2>&1
           echo "Код возврата: $?"
           echo "Содержимое папки build:"
           ls -la build/ || echo "Папка build пуста или не существует"
