@@ -21,7 +21,8 @@ func _draw() -> void:
 	if cursor_pos == Vector2.ZERO:
 		return
 
-	var control_size: Vector2 = get_size()
+	# Используем размер всего экрана, а не размер родителя
+	var control_size: Vector2 = get_viewport().get_visible_rect().size
 	var line_color = SettingsManager.get_color("cursor_line")
 	var rect_color = SettingsManager.get_color("cursor_rect")
 
