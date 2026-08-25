@@ -39,7 +39,7 @@ jobs:
       - name: Загрузка артефакта
         uses: actions/upload-artifact@v4
         with:
-          name: game-${{ matrix.platform }}
+          name: AsteroidRadar_${{ matrix.platform }}
           path: build/AsteroidRadar_${{ matrix.platform }}${{ matrix.extension }}
         if: always()
 
@@ -60,4 +60,4 @@ jobs:
         with:
           files: artifacts/**/*
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
