@@ -20,7 +20,10 @@ jobs:
             os: windows-latest
             preset: "Windows Desktop"
             artifact_name: "AsteroidRadar_Windows.exe"
-
+          - platform: macOS
+            os: macos-latest
+            preset: "macOS"
+            artifact_name: "AsteroidRadar_macOS.zip"
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -28,7 +31,7 @@ jobs:
       - name: Setup Godot
         uses: chickensoft-games/setup-godot@v2
         with:
-          version: 4.7.1
+          version: 4.7.2
           include-templates: true
           cache: true
 

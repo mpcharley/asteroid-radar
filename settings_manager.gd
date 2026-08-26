@@ -381,6 +381,7 @@ func load_settings() -> void:
 		alarm_volume = config.get_value("settings", "alarm_volume", 0.9)
 		language = config.get_value("settings", "language", Language.EN)
 		autobattle_enabled = config.get_value("settings", "autobattle", true)
+		
 	else:
 		current_difficulty = GameManager.Difficulty.MEDIUM
 		current_scheme_index = 0
@@ -391,3 +392,5 @@ func load_settings() -> void:
 		language = Language.EN
 		autobattle_enabled = false
 		GameManager.set_difficulty(GameManager.Difficulty.MEDIUM)
+		
+	AudioManager._update_volumes()

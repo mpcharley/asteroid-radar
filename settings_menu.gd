@@ -47,6 +47,8 @@ func _ready() -> void:
 	vbox.add_child(title)
 
 	# Сложность
+	
+	
 	var diff_label = Label.new()
 	diff_label.text = TranslationManager.get_text("difficulty_label")
 	diff_label.add_theme_font_override("font", FontManager.custom_font)
@@ -63,11 +65,15 @@ func _ready() -> void:
 		TranslationManager.get_text("medium"),
 		TranslationManager.get_text("hard")
 	]
+	
+	
 	for i in range(3):
 		var btn = Button.new()
 		btn.text = diff_names[i]
+		btn.toggle_mode = true
 		btn.custom_minimum_size = Vector2(100, 30)
 		btn.pressed.connect(_on_difficulty_selected.bind(i))
+		#btn.
 		diff_hbox.add_child(btn)
 		diff_buttons.append(btn)
 
@@ -255,6 +261,7 @@ func _update_autobattle_text(check: CheckButton) -> void:
 
 func open() -> void:
 	get_tree().paused = true
+	set_current_difficulty(GameManager.difficulty)
 
 func close() -> void:
 	get_tree().paused = false
@@ -262,26 +269,25 @@ func close() -> void:
 
 
 # -------------------- ОБРАБОТЧИКИ --------------------
+func set_current_difficulty(diff: int) -> void:
+	var style_pressed = StyleBoxFlat.new()
+	style_pressed.bg_color = SettingsManager.get_color("grid_line")
+	for i in range(diff_buttons.size()):
+		diff_buttons[i].add_theme_stylebox_override("pressed", style_pressed)
+		diff_buttons[i].button_pressed = (i == diff)
 
-func _on_difficulty_selected(diff: int) -> void:
-	SettingsManager.set_difficulty(diff)
-	close_and_free()
+func _on_difficulty_selected(index: int) -> void:
+	for i in range(diff_buttons.size()):
+		diff_buttons[i].button_pressed = (i == index)
+	set_current_difficulty(index)
+	SettingsManager.set_difficulty(index)
+	#close_and_free()
 
 
 func _on_color_scheme_selected(index: int) -> void:
 	SettingsManager.set_color_scheme(index)
-	close_and_free()
-
-
-func _on_music_toggled(check: CheckButton) -> void:
-	SettingsManager.toggle_music()
-	check.button_pressed = SettingsManager.music_enabled
-
-
-func _on_sounds_toggled(check: CheckButton) -> void:
-	SettingsManager.toggle_sounds()
-	check.button_pressed = SettingsManager.sounds_enabled
-
+	set_current_difficulty(GameManager.difficulty)
+	#close_and_free()
 
 func _on_autobattle_toggled(check: CheckButton) -> void:
 	SettingsManager.toggle_autobattle()
@@ -291,11 +297,13 @@ func _on_autobattle_toggled(check: CheckButton) -> void:
 
 func _on_language_selected(lang: int) -> void:
 	SettingsManager.set_language(lang)
-	close_and_free()
+	#close_and_free()
 
 
 func _on_restart_pressed() -> void:
 	GameManager.drop_score()
+	GameManager.reset_hp()
+	GameManager.reset_energy()
 	get_tree().paused = false
 	close_and_free()
 	get_tree().reload_current_scene()

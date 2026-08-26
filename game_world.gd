@@ -127,8 +127,10 @@ func spawn_asteroid() -> void:
 		category = Asteroid.SizeCategory.MEDIUM
 	else:
 		category = Asteroid.SizeCategory.LARGE
-
-	var margin = 50.0
+	
+	#минимальный отступ от края
+	var margin = 140.0
+	
 	var spawn_pos = Vector2(
 		randf_range(margin, screen_size.x - margin),
 		randf_range(margin, screen_size.y - margin)

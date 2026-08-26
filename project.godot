@@ -16,7 +16,6 @@ config/features=PackedStringArray("4.7", "Mobile")
 config/icon="res://icon.svg"
 
 [autoload]
-[autoload]
 
 AudioManager="*res://audio_manager.gd"
 SettingsManager="*res://settings_manager.gd"
