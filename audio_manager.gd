@@ -31,6 +31,7 @@ func _ready() -> void:
 		music_player.stream = music_stream
 		music_player.volume_db = linear_to_db(SettingsManager.music_volume)
 		music_player.autoplay = true
+		music_player.finished.connect(_on_music_finished)
 		if SettingsManager.music_volume > 0:
 			music_player.play()
 
@@ -58,7 +59,9 @@ func _ready() -> void:
 	# Подписываемся на изменение настроек
 	SettingsManager.settings_changed.connect(_update_volumes)
 
-
+func _on_music_finished():
+	music_player.play()
+	
 func _update_volumes() -> void:
 	# Обновляем громкость всех плееров (без пауз и перезапусков)
 	music_player.volume_db = linear_to_db(SettingsManager.music_volume)
@@ -71,7 +74,7 @@ func _update_volumes() -> void:
 		music_player.play()
 	# Если громкость стала 0 – останавливаем
 	elif SettingsManager.music_volume == 0 and music_player.playing:
-		music_player.stop()
+		music_player.set_stream_paused(true)
 
 
 func _process(delta: float) -> void:
